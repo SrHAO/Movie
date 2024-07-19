@@ -7,20 +7,10 @@ import { NavigationContainer } from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 
-
-const buttonRight = () => {
-    return(
-        <IconButton icon = 'magnify' onPress={() => Navigation.openDrawer()}/>
-        )
-    }
-
-
-
 export default function Navigation() {
     return (
             <Drawer.Navigator initialRouteName='app'  drawerContent={(props) => <DrawerContent {...props} />}>
-                <Drawer.Screen name='The Movie app' component={StackNavigation} 
-                options={{ headerRight: () => buttonRight()}}/>
+                <Drawer.Screen name='The Movie app' component={StackNavigation} options={{ headerShown:false}}/>
             </Drawer.Navigator>    
     )
 }
