@@ -7,25 +7,25 @@ import CarouselVertical from '../components/CarouselVertical';
 export default function Home() {
     const [newMovies, setNewMovies] = useState(null)
 
-   /* este es el modo 1
-   useEffect( async () => {
-       const data =await getNewsMoviesApi();
+   // este es el modo 1 metodo asincrono
+   /*useEffect( async () => {
+       const data = await getNewsMoviesApi();
        console.log(data);
-    }, [])*/
+    }, []);*/
 
     useEffect( () => {
-        getNewsMoviesApi().then((response) =>{
-            setNewMovies(response.results)
+        getNewsMoviesApi().then((response) => {
+            setNewMovies(response.results);
         })
         
-     }, [])
-     
+     }, []);
     
     return (
         <ScrollView>
             {newMovies && (
             <View style = {styles.news}>
                 <Title style={styles.newsTitle}>Nuevas Peliculas</Title>
+                <CarouselVertical data={newMovies}/>
             </View>
             )}
         </ScrollView>

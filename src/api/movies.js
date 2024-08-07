@@ -5,7 +5,7 @@ export function getNewsMoviesApi(page = 1){
 
     return fetch(url).then((response) => {
         return response.json();
-        }).then((result) =>{
+        }).then((result) => {
             return result;
         });
     }
