@@ -1,25 +1,25 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, View, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-
-//const {width} = Dimensions.get('window');
-//const ITEM_WIDTH = Math.round(width * 0.7);
+import { Text, Title } from 'react-native-paper';
+import { BASE_PATH_IMG } from '../utils/constants';
+import { getGenreMovieApi } from '../api/movies';
+import {map, size} from 'lodash';
 
 export default function CarouselVertical(props) {
 
     const width = Dimensions.get('window').width;
-    const {data} = props;
+    const {data, navigation} = props;
 
     return (
         <View style={{ flex: 1 }}>
         <Carousel
             loop
             width={width}
-            height={width / 2}
+            height={width}
             data={data}
-            //onSnapToItem={(index) => console.log('current index:', index)}
             renderItem={( item ) => (
-                <RenderItem data = {item}/>
+                <RenderItem data = {item} navigation = {navigation}/>
             )}
         />
     </View>
@@ -27,57 +27,67 @@ export default function CarouselVertical(props) {
 }
 
 function RenderItem(props) {
-    const {data} =  props;
-    const {title} = data.item;
-    console.log(title);
+    const {data, navigation} =  props;
+    const {title, poster_path, genre_ids, id} = data.item;
+    const [genres, setGenres] = useState(null);
+    const imageUrl = `${BASE_PATH_IMG}/w500${poster_path}`;
+    
+    useEffect(() => {
+        getGenreMovieApi(genre_ids).then((response) =>{
+            setGenres(response);
+        })
+    }, []);
 
+    const onNavigation = () => {
+        navigation.navigate('movie', {id});
+    }
 
     return(
-        <View>
-            <Text>Pelicula</Text>
-        </View>
+        <TouchableWithoutFeedback onPress={onNavigation}>
+            <View style={styles.card}>
+                <Image source={{uri: imageUrl}} style={styles.image}/>
+                <Title style={styles.title}>{title}</Title>
+                <View style={styles.genres}>
+                {genres && 
+                map(genres, (genre,index) => (
+                    <Text key={index} style={styles.genre}>
+                        {genre}
+                        {index !== size(genres) -1 && ', '}
+                    </Text>
+                ))}
+                </View>
+            </View>
+        </TouchableWithoutFeedback>
     )
 }
 
-const styles = StyleSheet.create({})
-
-/*
-
-const width = Dimensions.get('window').width;
-return (
-    <View style={{ flex: 1 }}>
-        <Carousel
-            loop
-            width={width}
-            height={width / 2}
-            autoPlay={true}
-            data={[...new Array(6).keys()]}
-            scrollAnimationDuration={1000}
-            onSnapToItem={(index) => console.log('current index:', index)}
-            renderItem={({ index }) => (
-                <View
-                    style={{
-                        flex: 1,
-                        borderWidth: 1,
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Text style={{ textAlign: 'center', fontSize: 30 }}>
-                        {index}
-                    </Text>
-                </View>
-            )}
-        />
-    </View>
-);
-
-*/
-
-
-        /*<Carousel
-            layout = {'default'}
-            data = {data}
-            renderItem = {(item) => <RenderItem data = {item}/>}
-            sliderWidth = {width}
-            itemWidth = {ITEM_WIDTH}
-        />*/
+const styles = StyleSheet.create({
+    card:{
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset:{
+            width: 0,
+            height: 10,
+        },
+        shadowOpacity: 1,
+        shadowRadius: 10,
+    },
+    image:{
+        width: '64%',
+        height: '81%',
+        borderRadius: 10,
+    },
+    title:{
+        marginHorizontal: 15,
+        marginTop: 1,
+        fontSize:20,
+    },
+    genres:{
+        flexDirection: 'row',
+        marginHorizontal: 10,
+    },
+    genre:{
+        fontSize:12,
+        color: '#8897a5',
+    }
+})
