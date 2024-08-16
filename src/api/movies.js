@@ -18,20 +18,20 @@ export function getGenreMovieApi(idGenres){
         .then((response) => {
             return response.json();
         })
-
         .then((result) => {
             const arrayGenres = [];
             idGenres.forEach((id) => {
                 result.genres.forEach((item) => {
                     if (item.id === id) arrayGenres.push(item.name);
                 });
+                
             });
             return arrayGenres;
         });
 }
 
 export function getAllGenresApi() {
-    const url = `${API_HOST}/genre/movie/list?api_key${API_KEY}&lenguage=${LANG}`;
+    const url = `${API_HOST}/genre/movie/list?api_key=${API_KEY}&language=${LANG}`;
 
     return fetch(url)
     .then((response) => {

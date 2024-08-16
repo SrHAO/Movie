@@ -28,7 +28,7 @@ export default function CarouselVertical(props) {
 
 function RenderItem(props) {
     const {data, navigation} =  props;
-    const {title, poster_path, genre_ids, id} = data.item;
+    const { id, title, poster_path, genre_ids} = data.item;
     const [genres, setGenres] = useState(null);
     const imageUrl = `${BASE_PATH_IMG}/w500${poster_path}`;
     
@@ -74,17 +74,17 @@ const styles = StyleSheet.create({
     },
     image:{
         width: '64%',
-        height: '81%',
+        height: '85%',
         borderRadius: 10,
     },
     title:{
         marginHorizontal: 15,
         marginTop: 1,
-        fontSize:20,
+        fontSize:17,
     },
     genres:{
         flexDirection: 'row',
-        marginHorizontal: 10,
+        marginHorizontal:10,
     },
     genre:{
         fontSize:12,

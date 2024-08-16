@@ -9,18 +9,23 @@ export default function Home(props) {
     const { navigation } = props;
     const [newMovies, setNewMovies] = useState(null);
     const [genreList, setGenreList] = useState([]);
+    const [genreSelected, setGenreSelected] = useState();
 
     useEffect( () => {
         getNewsMoviesApi().then((response) => {
             setNewMovies(response.results);
-        })
+        });
      }, []);
 
      useEffect(() => {
-        getAllGenresApi().then((response) =>{
+        getAllGenresApi().then((response) => {
             setGenreList(response.genres);
-        })
+        });
      }, []);
+
+     const onChangeGenre = (newGenreId) => {
+        setGenreSelected(newGenreId);
+     }
     
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -32,10 +37,14 @@ export default function Home(props) {
             )}
             
             <View style = {styles.genres}>
-                <Title style={styles.genresTitle}>Peliculas Por Genero</Title>
-                    <ScrollView>
-                    
-                    </ScrollView>
+                <Title style = {styles.genresTitle}>Peliculas Por Genero</Title>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.genreList}>
+                    {map(genreList, (genre) => (
+                    <Text key={genre.id} style={[styles.genre, {color: genre.id !== genreSelected ? '#8697a5' : '#ffff'}]} onPress={() => onChangeGenre(genre.id)}>
+                        {genre.name}
+                    </Text>
+                    ))}
+                </ScrollView>
             </View>
         </ScrollView>
     );
@@ -43,7 +52,7 @@ export default function Home(props) {
 
 const styles = StyleSheet.create({
     news:{
-        marginVertical:10,
+        marginVertical:5,
     },
     newsTitle:{
         marginBottom: 5,
@@ -59,5 +68,15 @@ const styles = StyleSheet.create({
         marginHorizontal:15,
         fontWeight: 'bold',
         fontSize: 20,
+    },
+    genreList:{
+        marginTop: 5,
+        marginBottom: 15,
+        paddingHorizontal: 20,
+        padding: 10,
+    },
+    genre:{
+        marginRight:10,
+        fontSize: 15,
     },
 });
